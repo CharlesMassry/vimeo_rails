@@ -1,3 +1,8 @@
+require 'uri'
+def hash_to_query(hash)
+  return URI.encode(hash.map{|k,v| "#{k}=#{v}"}.join("&"))
+end
+
 module Vimeo
   class Channel < Vimeo::Base
 
@@ -31,8 +36,13 @@ module Vimeo
     #
     # channel_id = channel ID[Integer] or channel name
 
-    def self.videos(channel_id)
-      get("/channels/#{channel_id}/videos")
+    def self.videos(channel_id, opts={})
+      url = "/channels/#{channel_id}/videos"
+      if opts.present?
+        url << "?" + hash_to_query(hash)
+      end
+
+      get(url)
     end
 
     # Check if this Channel contains a video. GET #
